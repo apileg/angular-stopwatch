@@ -1,36 +1,35 @@
 import {AfterViewInit, Component, ElementRef, ViewChild} from '@angular/core';
-import {fromEvent, interval} from "rxjs";
-import {buffer, debounceTime, filter} from "rxjs/operators";
+import {asyncScheduler, fromEvent, interval, Observable, Subscription} from "rxjs";
+import {buffer, debounceTime, filter, throttleTime} from "rxjs/operators";
 
 @Component({
   selector: 'app-stopwatch',
   templateUrl: './stopwatch.component.html',
-  styleUrls: ['./stopwatch.component.css']
+  styleUrls: ['./stopwatch.component.scss']
 })
 export class StopwatchComponent implements AfterViewInit {
+
+  @ViewChild("waitButton", {read: ElementRef}) waitButton!: ElementRef;
+
+  private step: number = 1000;
+  private tick$: Observable<number> = interval(this.step);
+  private subscription!: Subscription;
+
   public seconds: number = 0;
-
-  private readonly step: number = 1000;
-
-  private tick$ = interval(this.step);
-  private subscription: any;
-
-  @ViewChild("waitButton")
-  private waitButton!: ElementRef;
 
   constructor() {
   }
 
-  startTimer() {
+  public startTimer(): void {
     this.subscription = this.tick$.subscribe(() => ++this.seconds);
   }
 
-  stopAndResetTimer() {
+  public stopAndResetTimer(): void {
     this.subscription.unsubscribe();
     this.seconds = 0;
   }
 
-  onResetClick() {
+  public onResetClick(): void {
     this.stopAndResetTimer();
     this.startTimer();
   }
@@ -41,9 +40,9 @@ export class StopwatchComponent implements AfterViewInit {
     const waitButtonClick$ =
       clicks$
         .pipe(
-          buffer(clicks$.pipe(debounceTime(300))),
+          buffer(clicks$.pipe(throttleTime(300, asyncScheduler, { trailing: true }))),
           filter(clickArray => clickArray.length > 1)
-    );
+        );
 
     waitButtonClick$.subscribe(() => this.subscription.unsubscribe());
   }

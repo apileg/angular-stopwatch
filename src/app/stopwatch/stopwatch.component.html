@@ -1,9 +1,27 @@
-<form class="main-form">
-  <div>{{seconds}}</div>
-  <div class="control-buttons">
-    <button mat-stroked-button (click)="startTimer()">Start</button>
-    <button mat-stroked-button (click)="stopAndResetTimer()">Stop</button>
-    <button #waitButton>Wait</button>
-    <button mat-stroked-button (click)="onResetClick()">Reset</button>
+<div class="stopwatch-wrapper">
+  <div class="mat-card stopwatch">
+    <div class="time">{{seconds}}</div>
+    <div class="control-buttons">
+
+      <button (click)="startTimer()">
+        <img
+          src="https://img.icons8.com/ios-glyphs/60/000000/play--v1.png"/>
+      </button>
+
+      <button #waitButton>
+        <img
+          src="https://img.icons8.com/material-outlined/65/000000/pause--v1.png"/>
+      </button>
+
+      <button (click)="stopAndResetTimer()">
+        <img
+          src="https://img.icons8.com/ios-filled/65/000000/stop.png"/>
+      </button>
+
+      <button (click)="onResetClick()">
+        <img
+          src="https://img.icons8.com/material-outlined/65/000000/refresh.png"/>
+      </button>
+    </div>
   </div>
-</form>
+</div>

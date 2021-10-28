@@ -3,19 +3,9 @@ import { BrowserModule } from '@angular/platform-browser';
 
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import {RouterModule, Routes} from "@angular/router";
+import {AppRoutingModule} from "./app-routing.module";
+import {RouterModule} from "@angular/router";
 
-const routes: Routes = [
-  {
-    path: 'stopwatch',
-    loadChildren: () => import('./stopwatch/stopwatch.module').then(m => m.StopwatchModule),
-  },
-  {
-    path: '',
-    redirectTo: 'stopwatch',
-    pathMatch: 'full',
-  },
-]
 
 @NgModule({
   declarations: [
@@ -24,7 +14,8 @@ const routes: Routes = [
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
-    RouterModule.forRoot(routes),
+    AppRoutingModule,
+    RouterModule,
   ],
   providers: [],
   bootstrap: [AppComponent]
