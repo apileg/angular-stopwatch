@@ -1,39 +1,50 @@
-import { Component, OnInit } from '@angular/core';
-import {interval} from "rxjs";
+import {AfterViewInit, Component, ElementRef, ViewChild} from '@angular/core';
+import {fromEvent, interval} from "rxjs";
+import {buffer, debounceTime, filter} from "rxjs/operators";
 
 @Component({
   selector: 'app-stopwatch',
   templateUrl: './stopwatch.component.html',
   styleUrls: ['./stopwatch.component.css']
 })
-export class StopwatchComponent implements OnInit {
+export class StopwatchComponent implements AfterViewInit {
+  public seconds: number = 0;
 
-  private tick$ = interval(1000);
-  private hour: number | null = null;
-  private min: number | null = null;
-  private sec: number | null = null;
-  private subscribtion: any;
+  private readonly step: number = 1000;
+
+  private tick$ = interval(this.step);
+  private subscription: any;
+
+  @ViewChild("waitButton")
+  private waitButton!: ElementRef;
 
   constructor() {
-
   }
 
-  ngOnInit(): void {
-    this.subscribtion = this.tick$.subscribe(value =>
-      this.sec = value);
+  startTimer() {
+    this.subscription = this.tick$.subscribe(() => ++this.seconds);
   }
 
-  startTimer(){
-    this.subscribtion = this.tick$.subscribe(value =>
-      this.sec = value);
+  stopAndResetTimer() {
+    this.subscription.unsubscribe();
+    this.seconds = 0;
   }
 
-  stopTimer(){
-    this.subscribtion.unsubscribe();
+  onResetClick() {
+    this.stopAndResetTimer();
+    this.startTimer();
   }
 
-  waitTimer(){
+  ngAfterViewInit(): void {
+    const clicks$ = fromEvent(this.waitButton.nativeElement, 'click');
 
+    const waitButtonClick$ =
+      clicks$
+        .pipe(
+          buffer(clicks$.pipe(debounceTime(300))),
+          filter(clickArray => clickArray.length > 1)
+    );
+
+    waitButtonClick$.subscribe(() => this.subscription.unsubscribe());
   }
-
 }
