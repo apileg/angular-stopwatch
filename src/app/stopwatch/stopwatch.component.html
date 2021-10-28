@@ -1,0 +1,11 @@
+<form class="main-form">
+  <button mat-stroked-button disabled>{{hour}}</button>
+  <button mat-stroked-button disabled>{{min}}</button>
+  <button mat-stroked-button disabled>{{sec}}</button>
+  <div class="control-buttons">
+    <button mat-stroked-button (click)="startTimer()">Start/Stop</button>
+    <button mat-stroked-button (click)="stopTimer()">Start/Stop</button>
+    <button mat-stroked-button>Wait</button>
+    <button mat-stroked-button>Reset</button>
+  </div>
+</form>
